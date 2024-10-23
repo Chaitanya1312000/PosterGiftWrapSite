@@ -11,44 +11,69 @@
             justify-content: center;
             align-items: center;
             height: 100vh;
-            background-color: #ffccff;
             margin: 0;
             flex-direction: column;
+            overflow: hidden;
+            background: url('./clip-transparent-confetti-gif-16.gif') no-repeat center center fixed;
+            background-size: cover;
         }
 
-        .prompt {
+        .overlay {
+            background-color: rgba(255, 204, 255, 0.8);
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            position: absolute;
+            top: 0;
+            left: 0;
+            text-align: center;
+        }
+
+        .quote {
             font-size: 1.5em;
-            margin-bottom: 20px;
-            color: #333;
+            color: #555;
+            margin-bottom: 10px;
+            max-width: 600px;
+            opacity: 0;
+            transition: opacity 1s ease;
         }
 
         .gift-box {
-            width: 120px;
-            height: 120px;
+            width: 100px;
+            height: 100px;
             background-color: #ff4d4d;
-            position: relative;
             cursor: pointer;
             transition: transform 0.5s;
-            display: flex;
+            display: none;
             justify-content: center;
             align-items: center;
             font-size: 3em;
+            margin-top: 20px;
         }
 
         .gift-box:hover {
             transform: scale(1.1);
         }
 
+        .prompt {
+            font-size: 1.5em;
+            color: #333;
+            display: none;
+            margin-top: 10px;
+        }
+
         .image-container {
             display: none;
-            position: fixed; /* Use fixed to cover the entire screen */
+            position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background-color: rgba(255, 204, 255, 0.8); /* Optional background */
-            justify-content: center; /* Center the image */
-            align-items: center; /* Center the image */
+            justify-content: center;
+            align-items: center;
             opacity: 0;
             transition: opacity 1s ease;
         }
@@ -56,33 +81,80 @@
         img {
             max-width: 100%;
             max-height: 100%;
-            width: auto; /* Keep aspect ratio */
-            height: auto; /* Keep aspect ratio */
+            width: auto;
+            height: auto;
             border: 2px solid #ccc;
+            border-radius: 8px;
+        }
+
+        .logo {
+            max-width: 54%;
+            max-height: 135%;
+            width: auto;
+            height: auto;
+            border: 1px solid #ccc;
             border-radius: 8px;
         }
     </style>
 </head>
 
 <body>
+    <div class="overlay">
+        <div id="logo">
+            <img class="logo" src="./college-logo.jpg" alt="logo">
+        </div>
+        <div class="quote" id="welcomeQuote"></div>
 
-    <div class="prompt">Tap on the gift!</div>
+        <div class="gift-box" id="giftBox" onclick="revealImage()">
+            🎁
+        </div>
 
-    <div class="gift-box" onclick="revealImage()">
-        🎁
-    </div>
+        <div class="prompt" id="giftPrompt">Tap on the gift!</div>
 
-    <div class="image-container" id="imageContainer">
-        <img src="./Poster.jpg" alt="Gift Wrap">
+        <div class="image-container" id="imageContainer">
+            <img src="./Poster.jpg" alt="Gift Wrap">
+        </div>
     </div>
 
     <script>
+        const quoteText = "Welcome to the SSR College of Education! Embrace new beginnings and make unforgettable memories!";
+        const words = quoteText.split(" ");
+        const quoteElement = document.getElementById('welcomeQuote');
+        const giftBox = document.getElementById('giftBox');
+        const giftPrompt = document.getElementById('giftPrompt');
+        const logo = document.getElementById('logo');
+
+        let index = 0;
+
+        function displayNextWord() {
+            if (index < words.length) {
+                quoteElement.innerHTML += words[index] + " ";
+                index++;
+                setTimeout(displayNextWord, 100);
+            } else {
+                quoteElement.style.opacity = '1';
+                setTimeout(() => {
+                    giftBox.style.display = 'flex';
+                    giftPrompt.style.display = 'block';
+                }, 4000);
+            }
+        }
+
         function revealImage() {
+            quoteElement.style.opacity = '0';
+            giftBox.style.display = 'none';
+            giftPrompt.style.display = 'none';
+            logo.style.display = 'none';
+
             const imageContainer = document.getElementById('imageContainer');
-            imageContainer.style.display = 'flex'; // Change to 'flex' to center the image
+            imageContainer.style.display = 'flex';
             setTimeout(() => {
                 imageContainer.style.opacity = '1';
             }, 10);
+        }
+
+        window.onload = function () {
+            displayNextWord();
         }
     </script>
 
